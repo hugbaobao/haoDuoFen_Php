@@ -20,21 +20,13 @@ return [
 
     // 数据库连接配置信息
     'connections'     => [
-<<<<<<< HEAD
-        'mysql' => [
-=======
         'conversion' => [
->>>>>>> 618b839 (更新部分接口)
             // 数据库类型
             'type'            => env('database.type', 'mysql'),
             // 服务器地址
             'hostname'        => env('database.hostname', '127.0.0.1'),
             // 数据库名
-<<<<<<< HEAD
-            'database'        => env('database.database', 'new_php'),
-=======
             'database'        => env('database.database', 'convertion_atr'),
->>>>>>> 618b839 (更新部分接口)
             // 用户名
             'username'        => env('database.username', 'root'),
             // 密码
@@ -46,11 +38,7 @@ return [
             // 数据库编码默认采用utf8
             'charset'         => env('database.charset', 'utf8'),
             // 数据库表前缀
-<<<<<<< HEAD
-            'prefix'          => env('database.prefix', 'new_'),
-=======
             'prefix'          => env('database.prefix', 'cvsmsg_'),
->>>>>>> 618b839 (更新部分接口)
 
             // 数据库部署方式:0 集中式(单一服务器),1 分布式(主从服务器)
             'deploy'          => 0,
@@ -69,21 +57,13 @@ return [
             // 开启字段缓存
             'fields_cache'    => false,
         ],
-<<<<<<< HEAD
-        'demo' => [
-=======
         'weixin' => [
->>>>>>> 618b839 (更新部分接口)
             // 数据库类型
             'type'            => env('database.type', 'mysql'),
             // 服务器地址
             'hostname'        => env('database.hostname', '127.0.0.1'),
             // 数据库名
-<<<<<<< HEAD
-            'database'        => env('database.database2', 'demo_php'),
-=======
             'database'        => env('database.database2', 'wx_atr'),
->>>>>>> 618b839 (更新部分接口)
             // 用户名
             'username'        => env('database.username', 'root'),
             // 密码
@@ -95,11 +75,7 @@ return [
             // 数据库编码默认采用utf8
             'charset'         => env('database.charset', 'utf8'),
             // 数据库表前缀
-<<<<<<< HEAD
-            'prefix'          => env('database.prefix', 'new_'),
-=======
             'prefix'          => env('database.prefix', 'manage_'),
->>>>>>> 618b839 (更新部分接口)
 
             // 数据库部署方式:0 集中式(单一服务器),1 分布式(主从服务器)
             'deploy'          => 0,

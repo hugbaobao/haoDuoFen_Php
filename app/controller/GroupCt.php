@@ -51,25 +51,12 @@ class GroupCt extends BaseController
     }
 
     // 获取
-<<<<<<< HEAD
-    public function gettotal()
-    {
-        $result = Group::select()->count();
-        return ressend(200, '成功', $result);
-    }
-=======
->>>>>>> 618b839 (更新部分接口)
     public function getgroup()
     {
         $req = request()->param();
         $page = isset($req['currentpage']) ? $req['currentpage'] : 1;
         $limit = isset($req['singlepage']) ? $req['singlepage'] : 10;
         $sql = Group::page($page, $limit)->select();
-<<<<<<< HEAD
-        return ressend(200, '成功', $sql);
-    }
-    // 获取所有用于渲染表单
-=======
         $count = Group::count();
         return ressend(200, '成功', [
             'data'  =>   $sql,
@@ -77,14 +64,11 @@ class GroupCt extends BaseController
         ]);
     }
     // 获取单独分组列表所有用于渲染表单
->>>>>>> 618b839 (更新部分接口)
     public function getgroupall()
     {
         $sql = Group::withoutField('remarks,total')->select();
         return ressend(200, '成功', $sql);
     }
-<<<<<<< HEAD
-=======
 
     // 搜索的分组
     public function groupsearch()
@@ -104,5 +88,4 @@ class GroupCt extends BaseController
             'count'  =>   $count
         ]);
     }
->>>>>>> 618b839 (更新部分接口)
 }

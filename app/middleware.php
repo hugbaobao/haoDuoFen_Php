@@ -14,4 +14,6 @@ return [
     // AllowCrossDomain::class
     // 自定义跨域中间件
     // AllowCrossDomainMiddleware::class
+    // 处理请求头中间件,这里注释掉是考虑到登录时没有token无法通过中间件
+    // app\middleware\compareToken::class
 ];

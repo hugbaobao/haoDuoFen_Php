@@ -30,12 +30,6 @@ Route::get('hello/:name', 'index/hello'); */
 // 基本用法
 /* Route::rule('details/:id', 'Address/details')->allowCrossDomain(); */
 
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> 618b839 (更新部分接口)
 // 强制所有 URL 后缀为.html
 // Route::rule('details/:id', 'Address/details')->ext('html');
 
@@ -86,10 +80,6 @@ Route::group('demo', function () {
     Route::rule('dm', 'demo/dmupdate');
 })->allowCrossDomain();
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 618b839 (更新部分接口)
 // 测试api上报
 Route::group('tencent', function () {
     Route::rule('tfeed', 'tencent/tfeedback');
@@ -97,53 +87,40 @@ Route::group('tencent', function () {
 })->allowCrossDomain();
 
 // 以下为新加入
-<<<<<<< HEAD
-// 监测
-Route::group('monitor', function () {
-    Route::rule('index', 'Monitorct/index');
-    Route::rule('append', 'Monitorct/append');
-})->allowCrossDomain();
-
-=======
->>>>>>> 618b839 (更新部分接口)
 // 落地页
 Route::group('landing', function () {
     Route::rule('append', 'landingct/append');
     Route::rule('del', 'landingct/dellanding');
     Route::rule('dellot', 'landingct/dellandings');
     Route::rule('update', 'landingct/updatelanding');
-<<<<<<< HEAD
-    Route::rule('gtc', 'landingct/gettotal');
-    Route::rule('gtlanding', 'landingct/getlanding');
-=======
     Route::rule('gtlanding', 'landingct/getlanding');
     Route::rule('gtl', 'landingct/getlandingall');
     Route::rule('tgl', 'landingct/togglelanding');
     // 关联查询部分
     Route::rule('lag', 'landingct/landingandgroup');
->>>>>>> 618b839 (更新部分接口)
-})->allowCrossDomain();
+    Route::rule('lwg', 'landingct/landingwithgroup');
+    Route::rule('ubd', 'landingct/unbinding');
+    Route::rule('cgwx', 'landingct/changeweixin');
+})->middleware(\app\middleware\compareToken::class)->allowCrossDomain();
 
 // 分组
 Route::group('group', function () {
     Route::rule('append', 'groupct/append');
     Route::rule('del', 'groupct/delgroup');
     Route::rule('update', 'groupct/update');
-<<<<<<< HEAD
-    Route::rule('gtc', 'groupct/gettotal');
-    Route::rule('gtgroup', 'groupct/getgroup');
-    Route::rule('gta', 'groupct/getgroupall');
-=======
     Route::rule('gtgroup', 'groupct/getgroup');
     Route::rule('gta', 'groupct/getgroupall');
     Route::rule('gts', 'groupct/groupsearch');
-})->allowCrossDomain();
+})->allowCrossDomain()
+    ->middleware(\app\middleware\compareToken::class);
 
 // 监测
 Route::group('monitor', function () {
     Route::rule('append', 'Monitorct/append');
     Route::rule('gtmonitor', 'Monitorct/getmonitor');
-})->allowCrossDomain();
+    Route::rule('mthome', 'Monitorct/monitorhome');
+})->allowCrossDomain()
+    ->middleware(\app\middleware\compareToken::class);
 
 // 微信号管理统计
 Route::group('weixin', function () {
@@ -151,7 +128,15 @@ Route::group('weixin', function () {
     Route::rule('getwx', 'weixinct/getweixin');
     //微信号管理
     Route::rule('ctwx', 'weixinct/cotrweixin');
-})->allowCrossDomain();
+    Route::rule('udwx', 'weixinct/updateweixin');
+    Route::rule('delwx', 'weixinct/delweixin');
+    // 添加
+    Route::rule('append', 'weixinct/append');
+    Route::rule('udqr', 'weixinct/updateQR');
+    Route::rule('delqr', 'weixinct/deleteQR');
+    Route::rule('cjol', 'weixinct/changeonline');
+    Route::rule('cjlv', 'weixinct/changelevel');
+})->allowCrossDomain()->middleware(\app\middleware\compareToken::class);
 
 // 微信号分组
 Route::group('wxgroup', function () {
@@ -160,7 +145,8 @@ Route::group('wxgroup', function () {
     Route::rule('update', 'WxgroupCt/update');
     Route::rule('gtg', 'WxgroupCt/get_wxgroup');
     Route::rule('ggl', 'WxgroupCt/get_grouplist');
-})->allowCrossDomain();
+})->allowCrossDomain()
+    ->middleware(\app\middleware\compareToken::class);
 
 // 统计链接管理
 Route::group('cvslink', function () {
@@ -173,5 +159,12 @@ Route::group('cvslink', function () {
     Route::rule('min', 'cvslinkct/minsecond');
     Route::rule('gbl', 'cvslinkct/getbelongs');
     Route::rule('gtr', 'cvslinkct/getcvsrate');
->>>>>>> 618b839 (更新部分接口)
+})->allowCrossDomain()
+    ->middleware(\app\middleware\compareToken::class);
+
+// 用户登录
+Route::group('admin', function () {
+    Route::rule('rgs', 'AdminCt/register');
+    Route::rule('login', 'AdminCt/Login');
+    Route::rule('user', 'AdminCt/getuser');
 })->allowCrossDomain();

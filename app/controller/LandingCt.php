@@ -17,11 +17,7 @@ class LandingCt extends BaseController
     public function append()
     {
         $req = request()->param('data');
-<<<<<<< HEAD
-        $exist = Landing::wherelike('url', '%' . $req['url'] . '%')->find();
-=======
         $exist = Landing::wherelike('url', '%' . $req['landingurl'] . '%')->find();
->>>>>>> 618b839 (更新部分接口)
         if (isset($exist)) {
             return ressend(201, '该落地页链接已存在！');
         } else {
@@ -76,43 +72,12 @@ class LandingCt extends BaseController
     }
 
     // 获取落地页
-<<<<<<< HEAD
-    public function gettotal()
-    {
-        $result = Landing::select()->count();
-        return $result;
-    }
-=======
->>>>>>> 618b839 (更新部分接口)
     public function getlanding()
     {
         $req = request()->param();
         $filter = $req['condition'];
         $where = [];
         if ($filter['group']) {
-<<<<<<< HEAD
-            $where['group'] = $filter['group'];
-        }
-        if ($filter['enable']) {
-            $where['enable'] = $filter['enable'];
-        }
-        if ($filter['words']) {
-            $where['url'] = ['like', '%' . $filter['words'] . '%'];
-        }
-        return $where;
-        $page = isset($req['currentpage']) ? $req['currentpage'] : 1;
-        $limit = isset($req['singlepage']) ? $req['singlepage'] : 10;
-        $sql = Landing::page($page, $limit)->withoutField('total,neardate,cvscount')->where($where)->select();
-        return json([
-            'code'     =>     200,
-            'msg'      =>     '获取第' . $page . '页' . $limit . '条',
-            'data'     =>     $sql
-        ]);
-    }
-
-    // 分组
-
-=======
             $where[] = ['group', '=',  $filter['group']];
         }
         if ($filter['enable'] !== '') {
@@ -121,7 +86,6 @@ class LandingCt extends BaseController
         if ($filter['words']) {
             $where[] = ['url', 'like', '%' . $filter['words'] . '%'];
         }
-        // return $where;
         $page = isset($req['currentpage']) ? $req['currentpage'] : 1;
         $limit = isset($req['singlepage']) ? $req['singlepage'] : 10;
         $sql = Landing::page($page, $limit)->withoutField('total,neardate,cvscount')->where($where)->select();
@@ -161,144 +125,69 @@ class LandingCt extends BaseController
         return ressend(200, '修改成功！');
     }
 
-    // 分组
->>>>>>> 618b839 (更新部分接口)
-    public function modelinsert()
+    // 获取落地页带分组附表
+    public function landingwithgroup()
     {
-        $my = new Landing();
-
-        /* $data = [
-            'name' => '张三',
-            'phone' => '1777546',
-            'status' => '1',
-        ];
-        $my->save($data); */
-
-        /*  $my ->name = '张三';
-        $my ->phone = '111111111';
-        $my ->status = '0';
-        $my ->save(); */
-
-        /* $my->replace()->save([
-            'id' => 17,
-            'name' => '王二麻子',
-            'phone' => '333333333',
-            'status' => '1',
-        ]); */
-
-        /* $my->allowField(['name','phone'])
-           ->save([
-            'name' => '李四',
-            'phone' => '222222222',
-            'status' => '1',
-        ]); */
-
-        $my = Landing::create([
-            'name' => '银时',
-            'phone' => '444444444',
-            'status' => '2',
-        ], ['name', 'phone', 'status'], false);
-    }
-
-    public function modeldel()
-    {
-        /*   $user = Phptable::find('19');
-        $user->delete(); */
-
-        // Phptable::destroy('20');
-        // Phptable::destroy(['20']);
-
-        // Phptable::where('id','=',21)->delete();
-
-        Landing::destroy(function ($query) {
-            $query->where('id', '=', 23);
-        });
-    }
-
-    // 模型的数据更新
-    public function modelupdate()
-    {
-        /*     $user = Phptable::find(24);
-        $user->name = '金木';
-        $user->save(); */
-
-        /* $user = Phptable::where('name', '=' , '张三')->find();
-        $user->allowField(['name'])->save([
-            'name' => '鸣人',
-        ]); */
-
-        /* $list = [
-            ['id'=>3, 'name'=>'雏田', 'status'=>0],
-            ['id'=>5, 'name'=>'李白', 'status'=>1],
-            ['id'=>8, 'name'=>'曹操', 'status'=>2]
-            ];
-            $user =new Phptable();
-            dump($user->saveAll($list)); */
-
-        /* return Phptable::update([
-                  'id'=>9,
-                  'name'=>'宁次',
-                  'status'=>0
-            ]); */
-        return Landing::update([
-            'name' => '宁次次',
-            'status' => 1
-        ], ['id' => 9], ['name']);
-    }
-
-    // 模型的数据查询
-    public function modelselect()
-    {
-        /* $user = Phptable::find(5);
-        return json($user); */
-
-        /* $user = Phptable::find(999);
-        return json($user); */
-
-        /* $user = Phptable::findOrEmpty(999);
-        if($user->isEmpty()){
-            echo '数据为空！';
-        }else{
-            return json($user);
-        } */
-
-        /* $user = Phptable::where('name','=','鸣人')->find();
-        return json($user); */
-
-        /* $user = Phptable::select([1,3,5,7,9]);
-        foreach($user as $key => $data){
-            echo $data->id.'<br />';
-                } */
-
-        /*$user = Phptable::where('status = 1 AND id >3')->limit(5)->order('id','desc')->select();
-        return json($user); */
-
-        // return Phptable::where('name','鸣人')->value('id');
-        /* $user = Phptable::whereIn('name',['曹操','鸣人'])->column('id','status');
-        return json($user); */
-
-        // return Phptable::getByName('宁次次');
-
-        // 分批处理数据
-        /*  Phptable::chunk(3,function($query){
-            foreach($query as $query){
-                echo $query->name;
-            }
-            echo '<br />';
-        }); */
-
-        foreach (Landing::cursor() as $user) {
-            echo $user->name;
-            echo '<br />';
+        $req = request()->param();
+        $filter = $req['condition'];
+        $where = [];
+        if ($filter['group']) {
+            $where[] = ['group', '=',  $filter['group']];
         }
+        if ($filter['words']) {
+            $where[] = ['url', 'like',  '%' . $filter['words'] . '%'];
+        }
+
+        $page = isset($req['currentpage']) ? $req['currentpage'] : 1;
+        $limit = isset($req['singlepage']) ? $req['singlepage'] : 10;
+        $sql = Landing::page($page, $limit)->withoutField('total,neardate,cvscount,delivery,track,enable')->where($where)->with(['wxgroup' => function ($query) {
+            $query->field('id,name');
+        }])->select();
+        $count = Landing::withoutField('total,neardate,cvscount')->where($where)->count();
+        return json([
+            'code'     =>     200,
+            'msg'      =>     '获取成功！',
+            'data'     =>     $sql,
+            'count'    =>     $count
+        ]);
     }
 
-    // 模糊搜索 第一个数组参数，限定搜索器的字段，第二个则是表达式值
-    /*   public function withsearch() {
-        $result = Phptable::withsearch(['name','create_time'],[
-            'name'       =>  '次',
-            'create_time'=>  ['2000-1-1','2024-1-1']
-            ])->select();
-         return $result;
-    } */
+    // 删除落地页绑定微信号
+    public function unbinding()
+    {
+        $req = request()->param('id');
+        $sql = Landing::find($req);
+        $sql->gid     =   '';
+        $sql->same    =   '';
+        $sql->share   =   '';
+        $sql->mclick  =   '';
+        $sql->mtouch  =   '';
+        $sql->pclick  =   '';
+        $sql->pselect =   '';
+        $sql->from    =   '';
+        $sql->show    =   '';
+        $sql->save();
+        return ressend(200, '修改成功！');
+    }
+
+    // 修改落地页微信号信息
+    public function changeweixin()
+    {
+        $req = request()->param('data');
+        $sql = Landing::find($req['id']);
+
+        $sql->erweima   =     $req['erweima'];
+        $sql->from      =     $req['from'];
+        $sql->gid       =     $req['group'];
+        $sql->same      =     $req['same'];
+        $sql->weixin    =     $req['weixin'];
+        $sql->mclick    =     $req['mclick'];
+        $sql->mtouch    =     $req['mtouch'];
+        $sql->pclick    =     $req['pclick'];
+        $sql->pselect   =     $req['pselect'];
+        $sql->show      =     $req['show1'] || $req['show2'];
+        $sql->share     =     $req['share'];
+        $sql->save();
+        return ressend(200, '修改成功！');
+    }
 }

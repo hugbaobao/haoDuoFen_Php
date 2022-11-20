@@ -15,27 +15,28 @@ class WeixinCt extends BaseController
     }
 
     // 新增
-    /* public function append()
+    public function append()
     {
-        $req = request()->param();
-        $sql = new Monitor();
+        $req = request()->param('data');
+        $sql = new Weixin();
+        $exist = Weixin::where('wxh', $req['wxh'])->find();
+        if (isset($exist)) {
+            return ressend(201, '该微信号已存在！');
+        }
         $data = [
-            'url'         =>   $req['url'],
-            'cvsdate'     =>   $req['cvsdate'],
-            'cvstime'     =>   $req['cvstime'],
-            'stay'        =>   $req['stay'],
-            'type'        =>   $req['type'],
-            'target'      =>   $req['targetelement'],
-            'city'        =>   $req['city'] = '' ? [] : $req['city'],
-            'equipment'   =>   $req['equipment'],
-            'rate'        =>   $req['rate'],
-            'wx'          =>   $req['wx'],
-            'search'      =>   $req['search'],
-            'total'       =>   $req['total'],
+            'wxh'         =>   $req['wxh'],
+            'wxname'      =>   $req['wxname'],
+            'erweima'     =>   $req['erweima'],
+            'sex'         =>   $req['sex'],
+            'uid'         =>   $req['wxgroup'],
+            'online'      =>   $req['online'],
+            'control'     =>   $req['auto'],
+            'level'       =>   $req['level'],
+            'remarks'     =>   $req['remarks'],
         ];
         $result = $sql->save($data);
-        return json($result);
-    } */
+        return ressend(200, '成功', $result);
+    }
 
     // 查(行为转化统计页)
     public function getweixin()
@@ -126,5 +127,71 @@ class WeixinCt extends BaseController
             'data'     =>     $result,
             'count'    =>     $count
         ]);
+    }
+
+    // 改二维码
+    public function updateQR()
+    {
+        $req = request()->param('data');
+        $sql = Weixin::find($req['id']);
+        $sql->erweima   =   $req['sendimg'];
+        $sql->save();
+        return ressend(200, '成功');
+    }
+    // 删除二维码
+    public function deleteQR()
+    {
+        $req = request()->param('id');
+        $sql = Weixin::find($req);
+        $sql->erweima   =   '';
+        $sql->save();
+        return ressend(200, '成功');
+    }
+
+    // 改
+    public function updateweixin()
+    {
+        $req = request()->param('data');
+        return $req;
+        $result = Weixin::find($req['id']);
+        $result->wxh     =  $req['wxh'];
+        $result->wxname  =  $req['wxname'];
+        $result->erweima =  $req['erweima'];
+        $result->sex     =  $req['sex'];
+        $result->uid     =  $req['online'];
+        $result->online  =  $req['wxname'];
+        $result->control =  $req['auto'];
+        $result->level   =  $req['level'];
+        $result->remarks =  $req['remarks'];
+        $res = $result->save();
+        return ressend(200, '修改成功', $res);
+    }
+
+    // 删除微信
+    public function delweixin()
+    {
+        $req = request()->param('arr');
+        Weixin::destroy($req);
+        return ressend(200, '删除成功');
+    }
+
+    // 改在线状态
+    public function changeonline()
+    {
+        $req = request()->param();
+        $sql = Weixin::find($req['id']);
+        $sql->online   =   $req['online'];
+        $sql->save();
+        return ressend(200, '成功');
+    }
+
+    // 改权重
+    public function changelevel()
+    {
+        $req = request()->param();
+        $sql = Weixin::find($req['id']);
+        $sql->level   =   $req['level'];
+        $sql->save();
+        return ressend(200, '成功');
     }
 }

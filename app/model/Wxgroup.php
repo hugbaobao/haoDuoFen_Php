@@ -22,4 +22,9 @@ class Wxgroup extends model
     {
         return $this->hasMany(Weixin::class, 'uid', 'id');
     }
+
+    public function Landing()
+    {
+        return $this->hasMany(Landing::class, 'gid', 'id');
+    }
 }
