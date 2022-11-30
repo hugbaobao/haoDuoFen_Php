@@ -18,30 +18,31 @@ class Cvslink extends model
     protected $id = 'id';
 
     // 一对一相对关联
-    public function landing()
+    public function Landing()
     {
-        return $this->belongsTo(Landing::class, 'uid');
+        return $this->belongsTo(Landing::class, 'uid', 'id');
     }
+
 
     // 模型获取器
     public function getTypeAttr($value)
     {
-        $type  = [1 => '点击', 2 => '长按识别'];
+        $type  = [1 => '点击', 2 => '长按识别', null => ''];
         return $type[$value];
     }
     public function getCvstypeAttr($value)
     {
-        $Cvstype  = [1 => '点击', 2 => '长按'];
+        $Cvstype  = [1 => '点击', 2 => '长按', null => ''];
         return $Cvstype[$value];
     }
-    public function getCvscountAttr($value)
+    /* public function getCvscountAttr($value)
     {
-        $Cvscount  = [0 => '多次触发计多次', 1 => '多次触发计一次'];
+        $Cvscount  = [0 => '多次触发计多次', 1 => '多次触发计一次', null => ''];
         return $Cvscount[$value];
-    }
+    } */
     public function getcvsmodeAttr($value)
     {
-        $cvsmode  = [0 => '模糊匹配', 1 => '精确匹配'];
+        $cvsmode  = [0 => '模糊匹配', 1 => '精确匹配', null => ''];
         return $cvsmode[$value];
     }
 }

@@ -56,7 +56,7 @@ class GroupCt extends BaseController
         $req = request()->param();
         $page = isset($req['currentpage']) ? $req['currentpage'] : 1;
         $limit = isset($req['singlepage']) ? $req['singlepage'] : 10;
-        $sql = Group::page($page, $limit)->select();
+        $sql = Group::page($page, $limit)->withCount('Landing')->select();
         $count = Group::count();
         return ressend(200, '成功', [
             'data'  =>   $sql,

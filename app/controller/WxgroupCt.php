@@ -71,6 +71,7 @@ class WxgroupCt extends BaseController
         $limit = isset($req['singlepage']) ? $req['singlepage'] : 10;
         $sql = Wxgroup::page($page, $limit)
             ->where($where)
+            ->withCount('Weixin')
             ->select();
         $count = Wxgroup::where($where)
             ->count();
@@ -85,7 +86,7 @@ class WxgroupCt extends BaseController
     // 获取单独分组列表所有用于渲染表单
     public function get_grouplist()
     {
-        $sql = Wxgroup::withoutField('count,remarks')->select();
+        $sql = Wxgroup::withoutField('remarks')->select();
         return ressend(200, '成功', $sql);
     }
 }

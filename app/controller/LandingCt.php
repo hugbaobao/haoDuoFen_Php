@@ -22,15 +22,17 @@ class LandingCt extends BaseController
             return ressend(201, '该落地页链接已存在！');
         } else {
             $sql = new Landing();
+            // $gourps = $sql->Group()->find($req['group']);
             $data = [
                 'url'         =>   $req['landingurl'],
-                'group'       =>   $req['group'],
+                'uid'         =>   $req['group'],
                 'remarks'     =>   $req['remarks'],
                 'delivery'    =>   $req['delivery'],
                 'track'       =>   $req['track'],
                 'enable'      =>   $req['open'],
             ];
             $sql->save($data);
+            // $gourps->inc('total')->update();
             return ressend(200, '添加成功！');
         }
     }
@@ -88,8 +90,10 @@ class LandingCt extends BaseController
         }
         $page = isset($req['currentpage']) ? $req['currentpage'] : 1;
         $limit = isset($req['singlepage']) ? $req['singlepage'] : 10;
-        $sql = Landing::page($page, $limit)->withoutField('total,neardate,cvscount')->where($where)->select();
-        $count = Landing::withoutField('total,neardate,cvscount')->where($where)->count();
+        $sql = Landing::page($page, $limit)->withoutField('total,neardate,cvscount')->where($where)->with(['Wxgroup' => function ($query) {
+            $query->field('id,name');
+        }])->select();
+        $count = Landing::where($where)->count();
         return json([
             'code'     =>     200,
             'msg'      =>     '获取成功！',
@@ -170,6 +174,24 @@ class LandingCt extends BaseController
         return ressend(200, '修改成功！');
     }
 
+    // 批量删除
+    public function unbindinglot()
+    {
+        $req = request()->param('arr');
+        $sql = Landing::whereIn('id', $req)->save([
+            'gid'     =>   '',
+            'same'    =>   '',
+            'share'   =>   '',
+            'mclick'  =>   '',
+            'mtouch'  =>   '',
+            'pclick'  =>   '',
+            'pselect' =>   '',
+            'from'    =>   '',
+            'show'    =>   ''
+        ]);
+        return ressend(200, '修改成功！', $sql);
+    }
+
     // 修改落地页微信号信息
     public function changeweixin()
     {
@@ -189,5 +211,79 @@ class LandingCt extends BaseController
         $sql->share     =     $req['share'];
         $sql->save();
         return ressend(200, '修改成功！');
+    }
+
+    // 批量修改落地页微信号信息
+    public function changelot()
+    {
+        $req = request()->param('arr');
+        $data = request()->param('form');
+        Landing::whereIn('id', $req)->save([
+            'erweima'     =>   $data['erweima'],
+            'from'        =>   $data['from'],
+            'gid'         =>   $data['group'],
+            'same'        =>   $data['same'],
+            'weixin'      =>   $data['weixin'],
+            'mclick'      =>   $data['mclick'],
+            'mtouch'      =>   $data['mtouch'],
+            'pclick'      =>   $data['pclick'],
+            'pselect'     =>   $data['pselect'],
+            'share'       =>   $data['share'],
+            'show'        =>   $data['show1'] ? $data['show1'] : $data['show2']
+        ]);
+        return ressend(200, '修改成功！');
+    }
+
+    // 落地页排行
+    public function landingrank()
+    {
+        $req = request()->param();
+        $filter = $req['condition'];
+        $where = [];
+        $order = '';
+        if ($filter['group']) {
+            $where[] = ['uid', '=',  $filter['group']];
+        }
+        if ($filter['url']) {
+            $where[] = ['url', 'like', '%' . $filter['url'] . '%'];
+        }
+        if ($filter['date1']) {
+            $where[] = ['neardate', '>=',  $filter['date1']];
+        }
+        if ($filter['date2']) {
+            $where[] = ['neardate', '<=',  $filter['date2']];
+        }
+        if ($filter['order']) {
+            $order = $filter['order'];
+        }
+        $page = isset($req['currentpage']) ? $req['currentpage'] : 1;
+        $limit = isset($req['singlepage']) ? $req['singlepage'] : 10;
+        $sql = Landing::page($page, $limit)
+            ->where($where)
+            ->order($order, 'desc')
+            ->with(['Group' => function ($query) {
+                $query->field('id,group');
+            }])
+            ->Field('id,url,remarks,total,cvscount,fans,uid')
+            ->select();
+        $count = Landing::where($where)->count();
+        return json([
+            'code'     =>     200,
+            'msg'      =>     '获取成功！',
+            'data'     =>     $sql,
+            'count'    =>     $count
+        ]);
+    }
+
+
+    // test
+    public function gettest()
+    {
+        $map = ['cvstype', '=', '1'];
+        $count = Landing::hasWhere('Cvslink', function ($query) use ($map) {
+            $query->where('cvstype', '=', '1');
+        })->count();
+
+        return $count;
     }
 }

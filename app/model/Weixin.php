@@ -23,6 +23,11 @@ class Weixin extends model
         return $this->belongsTo(Wxgroup::class, 'uid');
     }
 
+    public function Monitor()
+    {
+        return $this->hasMany(Monitor::class, 'wx', 'id');
+    }
+
     // 模型获取器
     public function getOnlineAttr($value)
     {

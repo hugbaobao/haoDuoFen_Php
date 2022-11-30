@@ -25,15 +25,27 @@ class Landing extends model
     ];
 
     // 关联模型->统计链接管理
-    public function cvslink()
+    public function Cvslink()
     {
-        return $this->hasOne(Cvslink::class, 'uid');
+        return $this->hasOne(Cvslink::class, 'uid', 'id');
     }
 
     public function Wxgroup()
     {
         return $this->belongsTo(Wxgroup::class, 'gid');
     }
+
+    public function Group()
+    {
+        return $this->belongsTo(Group::class, 'uid');
+    }
+
+    // 一对多关联
+    public function Monitor()
+    {
+        return $this->hasMany(Monitor::class, 'uid', 'id');
+    }
+
 
     // 模型获取器
     public function getEnableAttr($value)

@@ -19,7 +19,7 @@ class CvslinkCt extends BaseController
     {
         $req = request()->param('data');
         $sql = new Cvslink();
-        $target = $sql->find($req['uid']);
+        $target = $sql->where('uid', '=', $req['uid'])->find();
         if (isset($target)) {
             return ressend(201, '该统计链接已存在！请编辑');
         } else {
@@ -72,22 +72,25 @@ class CvslinkCt extends BaseController
     {
         $req = request()->param();
         $filter = $req['condition'];
+
         $where = [];
         if ($filter['group']) {
-            $where[] = ['group', '=', $filter['group']];
+            $where[] = ['uid', '=', $filter['group']];
         }
         if ($filter['words']) {
             $where[] = ['url', 'like', '%' . $filter['words'] . '%'];
         }
-        // return $where;
         $page = isset($req['currentpage']) ? $req['currentpage'] : 1;
         $limit = isset($req['singlepage']) ? $req['singlepage'] : 10;
 
         $result = Cvslink::hasWhere('landing', function ($query) use ($where) {
             $query->where($where);
         })->with(['landing' => function ($query) {
-            $query->field('id,url,group');
+            $query->field('id,url,uid')->with(['Group' => function ($query) {
+                $query->field('id,group');
+            }]);
         }])->page($page, $limit)->select();
+
 
         $count = Cvslink::hasWhere('landing', function ($query) use ($where) {
             $query->where($where);
@@ -109,7 +112,7 @@ class CvslinkCt extends BaseController
         $where = [];
         $map = [];
         if ($filter['group']) {
-            $where[] = ['group', '=', $filter['group']];
+            $where[] = ['uid', '=', $filter['group']];
         }
         if ($filter['url']) {
             $where[] = ['id', '=', $filter['url']];
@@ -117,25 +120,30 @@ class CvslinkCt extends BaseController
         if ($filter['words']) {
             $where[] = ['url', 'like', '%' . $filter['words'] . '%'];
         }
-        if ($filter['cvstype']) {
-            $map[] = ['cvstype', '=', $filter['cvstype']];
-        }
         if ($filter['date1']) {
-            $map[] = ['newtime', '>=',  $filter['date1']];
+            $where[] = ['neardate', '>=',  $filter['date1']];
         }
         if ($filter['date2']) {
-            $map[] = ['newtime', '<=',  $filter['date2']];
+            $where[] = ['neardate', '<=',  $filter['date2']];
+        }
+        if ($filter['cvstype']) {
+            $map[] = ['cvstype', '=', $filter['cvstype']];
         }
         $page = isset($req['currentpage']) ? $req['currentpage'] : 1;
         $limit = isset($req['singlepage']) ? $req['singlepage'] : 10;
 
-        $result = Cvslink::hasWhere('landing', function ($query) use ($where) {
+        $result = Cvslink::hasWhere('Landing', function ($query) use ($where) {
             $query->where($where);
-        })->with(['landing' => function ($query) {
-            $query->field('id,url,group');
-        }])->where($map)->page($page, $limit)->select();
-
-        $count = Cvslink::hasWhere('landing', function ($query) use ($where) {
+        })->where($map)
+            ->with(['Landing' => function ($query) {
+                $query->field('id,uid,url,neardate,cvscount,total')->with(['Group' => function ($query) {
+                    $query->field('id,group');
+                }]);
+            }])
+            ->field('cvstype')
+            ->page($page, $limit)
+            ->select();
+        $count = Cvslink::hasWhere('Landing', function ($query) use ($where) {
             $query->where($where);
         })->where($map)->count();
 
@@ -147,26 +155,29 @@ class CvslinkCt extends BaseController
         ]);
     }
 
-    public function getbelongss()
+    // 落地页查询
+    public function forlandingget()
     {
-        $filter = request()->param();
+        $req = request()->param();
         $where = [];
-        if ($filter['group']) {
-            $where[] = ['group', '=', $filter['group']];
+        if ($req['words']) {
+            $where[] = ['url', 'like', '%' . $req['words'] . '%'];
         }
-        if ($filter['words']) {
-            $where[] = ['url', 'like', '%' . $filter['words'] . '%'];
-        }
-        // return json($where);
-        $sql = Cvslink::hasWhere('landing', function ($query) use ($where) {
-            $query->where($where);
-        })->with(['landing' => function ($query) {
-            $query->field('id,url,group');
-        }])->select();
+        // $where[] = ['url', 'like', '%www.888.com%'];
+        $where[] = ['enable', '=', 1];
 
-        /* $sql = Cvslink::hasWhere('landing', function ($query) use ($filter) {
-            $query->where('group', '=', $filter['group']);
-        })->with('landing')->select(); */
-        return $sql;
+        $result = Cvslink::hasWhere('landing', function ($query) use ($where) {
+            $query->where($where);
+        })->with([
+            'landing' => function ($query) {
+                $query->field('id,gid')->with(['Wxgroup' => function ($query) {
+                    $query->field('id')->with(['Weixin' => function ($query) {
+                        $query->field('id,uid,wxh,erweima,wxname,online,level')->where('online', '=', 1);
+                    }]);
+                }]);
+            }
+        ])->find();
+
+        return $result;
     }
 }

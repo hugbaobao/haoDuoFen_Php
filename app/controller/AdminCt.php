@@ -75,11 +75,31 @@ class AdminCt extends BaseController
         return ressend(202, '密码错误！');
     }
 
+    //改密
+    public function changepassword()
+    {
+        $user = request()->param('form');
+        $exist = Admin::where('username', $user['username'])->where('id', '<>', $user['id'])->find();
+        if (isset($exist)) {
+            return ressend(201, '该用户名已被占用！');
+        }
+        $sql = Admin::find($user['id']);
+        // 密码加密
+        $user['password'] = password_hash($user['password'], PASSWORD_DEFAULT);
+        $sql->username     =    $user['username'];
+        $sql->password     =    $user['password'];
+        $sql->header       =    $user['imageUrl'];
+        $sql->power        =    $user['power'];
+
+        $sql->save();
+        return ressend(200, '成功');
+    }
+
     // 查
     public function getuser()
     {
         $req = request()->param('id');
-        $user = Admin::field('username,header,power')->find($req);
+        $user = Admin::find($req);
         return ressend(200, '密码错误！', $user);
     }
 }

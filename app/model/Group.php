@@ -17,20 +17,21 @@ class Group extends model
     // 设置主键
     protected $id = 'id';
 
-    // 模型搜索器    模糊查询
-    public function searchUrlAttr($query, $value, $data)
+    // 一对多关联
+    public function Landing()
     {
-        $query->where('url', 'like', '%' . $value . '%');
+        return $this->hasMany(Landing::class, 'uid', 'id');
     }
 
-    public function searchCreateTimeAttr($query, $value, $data)
+    //远程一对多关联
+    public function cvslink()
     {
-        $query->whereBetweenTime('create_time', $value[0], $value[1]);
+        return $this->hasManyThrough(Cvslink::class, Landing::class, 'uid', 'uid', 'id', 'id');
     }
 
-    // 模型的查询范围
-    /*  public function scopePages($query, $page, $limit)
+    //远程一对多关联
+    public function Monitor()
     {
-        $query->page($page, 1)->limit($limit, 5);
-    } */
+        return $this->hasManyThrough(Monitor::class, Landing::class, 'uid', 'uid', 'id', 'id');
+    }
 }

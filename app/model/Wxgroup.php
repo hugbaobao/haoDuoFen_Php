@@ -27,4 +27,10 @@ class Wxgroup extends model
     {
         return $this->hasMany(Landing::class, 'gid', 'id');
     }
+
+    //远程一对多关联
+    /*   public function Cvslink()
+    {
+        return $this->hasManyThrough(Cvslink::class, Landing::class, 'uid', 'gid', 'id', 'id');
+    } */
 }

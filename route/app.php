@@ -101,6 +101,11 @@ Route::group('landing', function () {
     Route::rule('lwg', 'landingct/landingwithgroup');
     Route::rule('ubd', 'landingct/unbinding');
     Route::rule('cgwx', 'landingct/changeweixin');
+    Route::rule('ubl', 'landingct/unbindinglot');
+    Route::rule('cgl', 'landingct/changelot');
+    //落地页排行
+    Route::rule('lar', 'landingct/landingrank');
+    Route::rule('gtr', 'landingct/getcvsrate');
 })->middleware(\app\middleware\compareToken::class)->allowCrossDomain();
 
 // 分组
@@ -117,6 +122,7 @@ Route::group('group', function () {
 // 监测
 Route::group('monitor', function () {
     Route::rule('append', 'Monitorct/append');
+    Route::rule('inctotal', 'Monitorct/inctotal');
     Route::rule('gtmonitor', 'Monitorct/getmonitor');
     Route::rule('mthome', 'Monitorct/monitorhome');
 })->allowCrossDomain()
@@ -151,7 +157,7 @@ Route::group('wxgroup', function () {
 // 统计链接管理
 Route::group('cvslink', function () {
     // 测试预留
-    Route::rule('gbls', 'cvslinkct/getbelongss');
+    // Route::rule('gbls', 'cvslinkct/getbelongss');
     // 正式
     Route::rule('append', 'cvslinkct/append');
     Route::rule('del', 'cvslinkct/delcvs');
@@ -162,9 +168,22 @@ Route::group('cvslink', function () {
 })->allowCrossDomain()
     ->middleware(\app\middleware\compareToken::class);
 
+// 统计链接管理
+Route::group('cvslink', function () {
+    Route::rule('flg', 'cvslinkct/forlandingget');
+})->allowCrossDomain();
+
 // 用户登录
 Route::group('admin', function () {
     Route::rule('rgs', 'AdminCt/register');
     Route::rule('login', 'AdminCt/Login');
     Route::rule('user', 'AdminCt/getuser');
+    Route::rule('reset', 'AdminCt/changepassword');
+})->allowCrossDomain();
+
+// accesstoken
+Route::group('access', function () {
+    Route::rule('index', 'AccessCt/index');
+    Route::rule('add', 'AccessCt/register');
+    Route::rule('get', 'AccessCt/getuser');
 })->allowCrossDomain();

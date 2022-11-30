@@ -152,14 +152,14 @@ class WeixinCt extends BaseController
     public function updateweixin()
     {
         $req = request()->param('data');
-        return $req;
+        // return $req;
         $result = Weixin::find($req['id']);
         $result->wxh     =  $req['wxh'];
         $result->wxname  =  $req['wxname'];
         $result->erweima =  $req['erweima'];
         $result->sex     =  $req['sex'];
-        $result->uid     =  $req['online'];
-        $result->online  =  $req['wxname'];
+        $result->uid     =  $req['wxgroup'];
+        $result->online  =  $req['online'];
         $result->control =  $req['auto'];
         $result->level   =  $req['level'];
         $result->remarks =  $req['remarks'];

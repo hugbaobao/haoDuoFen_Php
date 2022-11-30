@@ -20,7 +20,7 @@ class MonitorCt extends BaseController
         $req = request()->param();
         $sql = new Monitor();
         $data = [
-            'url'         =>   $req['url'],
+            'uid'         =>   $req['url'],
             'cvsdate'     =>   $req['cvsdate'],
             'cvstime'     =>   $req['cvstime'],
             'stay'        =>   $req['stay'],
@@ -33,9 +33,27 @@ class MonitorCt extends BaseController
             'search'      =>   $req['search'],
             'total'       =>   $req['total'],
         ];
-        $result = $sql->save($data);
-        return json($result);
+        $sql->save($data);
+        $sql->Landing()->where('id', '=', $req['url'])->inc('total', 1)->inc('cvscount', 1)->update();
+        $sql->Weixin()->where('wxh', '=', $req['wx'])->inc('visits')->inc('copy')->update();
     }
+
+    public function inctotal()
+    {
+        $req = request()->param();
+        $sql = new Monitor();
+        $sql->Landing()->where('id', '=', $req['url'])->inc('total', 1)->update();
+        $sql->Weixin()->where('wxh', '=', $req['wx'])->inc('visits')->update();
+    }
+
+    /*  public function test()
+    {
+        $req = request()->param();
+        $sql = new Monitor();
+        $sql->Landing()->where('id', '=', $req['url'])->inc('total', 1)->update();
+        $result = $sql->Weixin()->where('wxh', '=', $req['wx'])->inc('visits')->inc('copy', 1)->update();
+        return $result;
+    } */
 
     // 查
     public function getmonitor()
@@ -43,40 +61,45 @@ class MonitorCt extends BaseController
         $req = request()->param();
         $filter = $req['condition'];
         $where = [];
+        $wheredate = [];
         $map = [];
-        if ($filter['class']) {
-            $where[] = ['type', '=',  $filter['class']];
-        }
-        if ($filter['group']) {
-            $where[] = ['group', '=',  $filter['group']];
+        if ($filter['url']) {
+            $where[] = ['cvsmsg_one.uid', '=', $filter['url']];
         }
         if ($filter['date1']) {
-            $where[] = ['cvsdate', '>',  $filter['date1']];
+            $where[] = ['cvsdate', '>=', $filter['date1']];
         }
         if ($filter['date2']) {
-            $where[] = ['cvsdate', '<',  $filter['date2']];
+            $where[] = ['cvsdate', '<=', $filter['date2']];
         }
-        if ($filter['url']) {
-            $where[] = ['url', '=', $filter['url']];
+        if ($filter['state']) {
+            $where[] = ['report', '=',  $filter['state']];
         }
         if ($filter['words']) {
             $map[] = ['url', 'like', '%' . $filter['words'] . '%'];
-            $map[] = ['wx', 'like', '%' . $filter['words'] . '%'];
         }
-        // return $map;
-        // order,source,state字段未启用
+        if ($filter['group']) {
+            $map[] = ['gid', '=',  $filter['group']];
+        }
+        // order,source,state等部分字段未启用
         $page = isset($req['currentpage']) ? $req['currentpage'] : 1;
         $limit = isset($req['singlepage']) ? $req['singlepage'] : 10;
-        $sql = Monitor::page($page, $limit)
-            ->where($where)
-            ->where(function ($query) use ($map) {
-                $query->whereOr($map);
-            })
+
+        $sql = Monitor::hasWhere('Landing', function ($query) use ($map) {
+            $query->where($map);
+        })->where($where)->with(['Landing' => function ($query) {
+            $query->field('id,uid,url,remarks')
+                ->with(['Group' => function ($query) {
+                    $query->field('id,group');
+                }]);
+        }])
+            ->page($page, $limit)
+            ->order('cvsdate', 'desc')
             ->select();
-        $count = Monitor::where($where)
-            ->where(function ($query) use ($map) {
-                $query->whereOr($map);
-            })
+
+        $count = Monitor::hasWhere('Landing', function ($query) use ($map) {
+            $query->where($map);
+        })->where($where)
             ->count();
         return json([
             'code'     =>     200,
