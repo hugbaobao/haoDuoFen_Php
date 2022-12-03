@@ -159,6 +159,7 @@ class CvslinkCt extends BaseController
     public function forlandingget()
     {
         $req = request()->param();
+        return json($req);
         $where = [];
         if ($req['words']) {
             $where[] = ['url', 'like', '%' . $req['words'] . '%'];
@@ -177,7 +178,6 @@ class CvslinkCt extends BaseController
                 }]);
             }
         ])->find();
-
         return $result;
     }
 }

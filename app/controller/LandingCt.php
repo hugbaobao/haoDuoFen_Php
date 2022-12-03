@@ -48,7 +48,7 @@ class LandingCt extends BaseController
     {
         $req = request()->param('arr');
         $result = Landing::destroy($req);
-        return $result;
+        return ressend(200, '删除成功', $result);
     }
 
     // 修改落地页
@@ -90,8 +90,8 @@ class LandingCt extends BaseController
         }
         $page = isset($req['currentpage']) ? $req['currentpage'] : 1;
         $limit = isset($req['singlepage']) ? $req['singlepage'] : 10;
-        $sql = Landing::page($page, $limit)->withoutField('total,neardate,cvscount')->where($where)->with(['Wxgroup' => function ($query) {
-            $query->field('id,name');
+        $sql = Landing::page($page, $limit)->withoutField('total,neardate,cvscount')->where($where)->with(['Group' => function ($query) {
+            $query->field('id,group');
         }])->select();
         $count = Landing::where($where)->count();
         return json([

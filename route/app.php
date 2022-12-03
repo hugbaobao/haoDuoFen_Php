@@ -125,8 +125,7 @@ Route::group('monitor', function () {
     Route::rule('inctotal', 'Monitorct/inctotal');
     Route::rule('gtmonitor', 'Monitorct/getmonitor');
     Route::rule('mthome', 'Monitorct/monitorhome');
-})->allowCrossDomain()
-    ->middleware(\app\middleware\compareToken::class);
+})->allowCrossDomain();
 
 // 微信号管理统计
 Route::group('weixin', function () {
