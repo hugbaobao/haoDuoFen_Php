@@ -32,6 +32,7 @@ class MonitorCt extends BaseController
             'wx'          =>   $req['wx'],
             'search'      =>   $req['search'],
             'total'       =>   $req['total'],
+            'report'      =>   $req['report'],
         ];
         $sql->save($data);
         $sql->Landing()->where('id', '=', $req['url'])->inc('total', 1)->inc('cvscount', 1)->update();

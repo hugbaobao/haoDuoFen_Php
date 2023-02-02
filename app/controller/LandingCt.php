@@ -13,7 +13,6 @@ class LandingCt extends BaseController
         return 'index';
     }
 
-    // 新增 落地页
     public function append()
     {
         $req = request()->param('data');
@@ -37,7 +36,6 @@ class LandingCt extends BaseController
         }
     }
 
-    // 删除落地页
     public function dellanding()
     {
         $req = request()->param('id');
@@ -51,7 +49,6 @@ class LandingCt extends BaseController
         return ressend(200, '删除成功', $result);
     }
 
-    // 修改落地页
     public function updatelanding()
     {
         $req = request()->param('data');
@@ -73,7 +70,6 @@ class LandingCt extends BaseController
         }
     }
 
-    // 获取落地页
     public function getlanding()
     {
         $req = request()->param();
@@ -101,13 +97,13 @@ class LandingCt extends BaseController
             'count'    =>     $count
         ]);
     }
-    // 单独url列表用于渲染菜单
+
     public function getlandingall()
     {
         $sql = Landing::field('id,url')->select();
         return ressend(200, '成功', $sql);
     }
-    // url与列表的集合
+
     public function landingandgroup()
     {
         $sql = Landing::with(['cvslink' => function ($query) {
@@ -118,7 +114,6 @@ class LandingCt extends BaseController
         return json($result);
     }
 
-    // 单条落地页开启状态
     public function togglelanding()
     {
         $req = request()->param();
@@ -129,7 +124,6 @@ class LandingCt extends BaseController
         return ressend(200, '修改成功！');
     }
 
-    // 获取落地页带分组附表
     public function landingwithgroup()
     {
         $req = request()->param();
@@ -156,7 +150,6 @@ class LandingCt extends BaseController
         ]);
     }
 
-    // 删除落地页绑定微信号
     public function unbinding()
     {
         $req = request()->param('id');
@@ -192,7 +185,6 @@ class LandingCt extends BaseController
         return ressend(200, '修改成功！', $sql);
     }
 
-    // 修改落地页微信号信息
     public function changeweixin()
     {
         $req = request()->param('data');

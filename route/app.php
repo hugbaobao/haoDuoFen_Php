@@ -186,3 +186,12 @@ Route::group('access', function () {
     Route::rule('add', 'AccessCt/register');
     Route::rule('get', 'AccessCt/getuser');
 })->allowCrossDomain();
+
+Route::group('cvstype', function () {
+    Route::rule('gtl', 'cvstypeCt/gettypelist');
+    Route::rule('upn', 'cvstypeCt/updatename');
+    Route::rule('del', 'cvstypeCt/delcvstype');
+    Route::rule('append', 'cvstypeCt/append');
+    Route::rule('tpl', 'cvstypeCt/typelist');
+})->allowCrossDomain()
+    ->middleware(\app\middleware\compareToken::class);

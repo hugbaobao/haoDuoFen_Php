@@ -20,7 +20,7 @@ class CvslinkCt extends BaseController
         $req = request()->param('data');
         $sql = new Cvslink();
         $target = $sql->where('uid', '=', $req['uid'])->find();
-        if (isset($target)) {
+        if (isset($target) && $target->type == $req['type']) {
             return ressend(201, '该统计链接已存在！请编辑');
         } else {
             $data = [
@@ -104,7 +104,6 @@ class CvslinkCt extends BaseController
         ]);
     }
 
-    // 转化率
     public function getcvsrate()
     {
         $req = request()->param();
